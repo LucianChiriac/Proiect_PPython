@@ -22,19 +22,19 @@ def paint_upper_menu():
     WINDOW.blit(score_text, ((rect.size[0]-score_text.get_width())/2, 0))
 
 
-def paint_lower_menu():
+def paint_lower_menu(current_color, next_color):
     # draw the lower menu rectangle
     rect = pg.draw.rect(
         WINDOW, BCKG_DOWN, (0, SCREEN_SIZE[1]-LOWER_MENU_HEIGHT, SCREEN_SIZE[0], LOWER_MENU_HEIGHT))
     # Draw the middle ball to be shot
-    paint_bubble(WINDOW, SHOOTER[0], SHOOTER[1], RED)
+    paint_bubble(WINDOW, SHOOTER[0], SHOOTER[1], current_color)
     # Insert text message with color of next ball
     text = Font.render("Next bubble: ", True, PURPLE)
     WINDOW.blit(text, (SHOOTER[0]+100, SCREEN_SIZE[1] -
                 (LOWER_MENU_HEIGHT+Font.get_height())/2))
     # Draw the "next" ball, after the text
     paint_bubble(WINDOW, SHOOTER[0]+125+text.get_width(), SCREEN_SIZE[1] -
-                 (LOWER_MENU_HEIGHT)/2, BLUE)
+                 (LOWER_MENU_HEIGHT)/2, next_color)
 
 # function to compute the center for all possibile bubbles on the game map
 
@@ -79,9 +79,9 @@ def get_shooter_rect():  # the bubble to be shot
     return rect
 
 
-def paint_game_window():
+def paint_game_window(current_color, next_color):
     WINDOW.fill(WHITE)
     paint_upper_menu()
     paint_bubbleWall()
-    paint_lower_menu()
+    paint_lower_menu(current_color, next_color)
     pg.display.update()

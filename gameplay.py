@@ -38,30 +38,45 @@ def bubbleTrajectory(start_pos, angle):
         nextBallPos(trajectory[-1], angl)
         angl = wallCollision(trajectory[-1], angl)
         final, row, col = finalCollision(trajectory[-1], angl)
+    if row % 2 == 0:
+        d = 0
+    else:
+        d = 1
     # knowing the point of impact, calculate where will the bubble be snapped in place
         # Step 1: check if the point of impact is below the half of the ball, which means ball will be placed on next row
     if trajectory[-1][1] > bubble_grid[row][col][1]:
         # check wether left-side or right side
         if trajectory[-1][0] < bubble_grid[row][col][0]:
-            newX = bubble_grid[row+1][col][0]
-            newY = bubble_grid[row+1][col][1]
+            newX = bubble_grid[row+1][col-(1-d)][0]
+            newY = bubble_grid[row+1][col-(1-d)][1]
             trajectory[-1] = (newX, newY)
+            r = row+1
+            c = col-(1-d)
+            print("Lower Left", d, r, c)
         else:
-            newX = bubble_grid[row+1][col+1][0]
-            newY = bubble_grid[row+1][col+1][1]
+            newX = bubble_grid[row+1][col+d][0]
+            newY = bubble_grid[row+1][col+d][1]
             trajectory[-1] = (newX, newY)
+            r = row+1
+            c = col+d
+            print("Lower Right", d, r, c)
         # Step 2: check if point of impact is above middle right point of ball, so bubble will be placed on same row, next position, or analogue, left
     if trajectory[-1][1] <= bubble_grid[row][col][1]:
-        print("here")
         if trajectory[-1][0] < bubble_grid[row][col][0]:
-            newX = bubble_grid[row][col+1][0]
-            newY = bubble_grid[row][col+1][1]
-            trajectory[-1] = (newX, newY)
-        else:
             newX = bubble_grid[row][col-1][0]
             newY = bubble_grid[row][col-1][1]
             trajectory[-1] = (newX, newY)
-    return trajectory
+            r = row
+            c = col-1
+            print("Left", d, r, c)
+        else:
+            newX = bubble_grid[row][col+1][0]
+            newY = bubble_grid[row][col+1][1]
+            trajectory[-1] = (newX, newY)
+            r = row
+            c = col+1
+            print("Right", d, r, c)
+    return trajectory, r, c
 
 
 # a function to check for collisions between bubbles and lateral walls
@@ -92,3 +107,13 @@ def finalCollision(pos, angle):
     if pos[1] < RADIUS+UPPER_MENU_HEIGHT+UPAD:
         return True
     return False, None, None
+
+
+# function to add the Shot bubble to the matrix
+def add_bubble(pos, color, r, c):
+    bubble_grid[r][c] = (pos[0], pos[1], color, True)
+    # A function to pop the bubbles and update the matrix
+
+
+def bubble_pop(start_pos):
+    x = 2
