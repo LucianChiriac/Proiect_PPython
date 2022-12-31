@@ -39,23 +39,28 @@ def paint_lower_menu():
 # function to compute the center for all possibile bubbles on the game map
 
 
-def get_bubble_coordinates():
-    for r in range(ROWS):
+def get_bubble_specs():  # matrix of tuples of shape (x,y,color, filled) where x,y are the center coordinates, filled=True/False indicating wether there is a bubble there or not
+    for r in range(MAXROWS):
         coords = []  # one row of bubble "centers"
-        for c in range(COLS):
-            x = c*r*2+RADIUS
-            y = MENU_HEIGHT + r*2*RADIUS+r
-            coords.append((x, y))
-        bubble_coords.append(coords)
+        for c in range(MAXCOLS):
+            x = (c*2+1+r % 2)*RADIUS
+            y = UPPER_MENU_HEIGHT + (r*2+1)*RADIUS - r*7
+            color = random.sample(COLORS, 1)[0]  # set color at random
+            if r < ROWS and c < COLS:
+                filled = True
+            else:
+                filled = False
+            coords.append((x, y, color, filled))
+        bubble_grid.append(coords)
 
 
 def paint_bubbleWall():
     # pygame.Rect(left,top,width,height)
-    for r in range(ROWS):
-        for c in range(COLS):
-            color = random.sample(COLORS, 1)[0]  # set color at random
-            center = bubble_coords[r][c]
-            pg.draw.circle(WINDOW, color, center, RADIUS, width=2)
+    for r in range(MAXROWS):
+        for c in range(MAXCOLS):
+            if (bubble_grid[r][c][3]):
+                x, y, color = bubble_grid[r][c][0], bubble_grid[r][c][1], bubble_grid[r][c][2]
+                paint_bubble(WINDOW, LPAD//2+x, UPAD+y, color)
 
 
 def paint_bubble(screen, x, y, color):
@@ -75,5 +80,6 @@ def get_shooter_rect():  # the bubble to be shot
 def paint_game_window():
     WINDOW.fill(WHITE)
     paint_upper_menu()
+    paint_bubbleWall()
     paint_lower_menu()
     pg.display.update()
