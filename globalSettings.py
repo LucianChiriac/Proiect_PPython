@@ -40,7 +40,7 @@ UPAD = 15
 DPAD = 0
 
 # Bubble specs
-VELOCITY = 15  # speed with which bubble flies
+VELOCITY = 10  # speed with which bubble flies
 RADIUS = 25
 
 # Bubble matrix size

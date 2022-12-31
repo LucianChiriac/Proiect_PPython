@@ -43,8 +43,9 @@ def get_bubble_specs():  # matrix of tuples of shape (x,y,color, filled) where x
     for r in range(MAXROWS):
         coords = []  # one row of bubble "centers"
         for c in range(MAXCOLS):
-            x = (c*2+1+r % 2)*RADIUS
-            y = UPPER_MENU_HEIGHT + (r*2+1)*RADIUS - r*7
+            x = (c*2+1+r % 2)*RADIUS + LPAD//2  # (added the padding)
+            y = UPPER_MENU_HEIGHT + (r*2+1)*RADIUS - \
+                r*7 + UPAD  # (added padding)
             color = random.sample(COLORS, 1)[0]  # set color at random
             if r < ROWS and c < COLS:
                 filled = True
@@ -52,6 +53,7 @@ def get_bubble_specs():  # matrix of tuples of shape (x,y,color, filled) where x
                 filled = False
             coords.append((x, y, color, filled))
         bubble_grid.append(coords)
+    return bubble_grid
 
 
 def paint_bubbleWall():
@@ -60,7 +62,7 @@ def paint_bubbleWall():
         for c in range(MAXCOLS):
             if (bubble_grid[r][c][3]):
                 x, y, color = bubble_grid[r][c][0], bubble_grid[r][c][1], bubble_grid[r][c][2]
-                paint_bubble(WINDOW, LPAD//2+x, UPAD+y, color)
+                paint_bubble(WINDOW, x, y, color)
 
 
 def paint_bubble(screen, x, y, color):

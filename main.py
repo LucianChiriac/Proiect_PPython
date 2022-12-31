@@ -12,7 +12,7 @@ def main():
     global trajectory
     displaysurface = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption("Game")
-    get_bubble_specs()
+    bubble_grid = get_bubble_specs()
     paint_game_window()
     pygame.display.update()
     while True:
