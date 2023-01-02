@@ -32,6 +32,7 @@ def nextBallPos(start_pos, angle):
 def bubbleTrajectory(start_pos, angle):
     angl = angle
     global trajectory
+    global LOST_GAME
     trajectory = [start_pos]
     final = False
     while not final:
@@ -45,28 +46,34 @@ def bubbleTrajectory(start_pos, angle):
     # knowing the point of impact, calculate where will the bubble be snapped in place
         # Step 1: check if the point of impact is below the half of the ball, which means ball will be placed on next row
     if trajectory[-1][1] > bubble_grid[row][col][1]:
-        # check wether left-side or right side
-        if trajectory[-1][0] < bubble_grid[row][col][0]:
-            newX = bubble_grid[row+1][col-(1-d)][0]
-            newY = bubble_grid[row+1][col-(1-d)][1]
+        # check if game is lost
+        if row == MAXROWS-1:
+            LOST_GAME = True
             r = row+1
-            c = col-(1-d)
-            if col-(1-d) < 0:  # special case
-                newX = bubble_grid[row+1][0][0]
-                newY = bubble_grid[row+1][0][1]
-                c = 0
-            trajectory[-1] = (newX, newY)
-
+            c = col
         else:
-            newX = bubble_grid[row+1][col+d][0]
-            newY = bubble_grid[row+1][col+d][1]
-            r = row+1
-            c = col+d
-            if col+d >= COLS:
-                newX = bubble_grid[row+1][COLS-1][0]
-                newY = bubble_grid[row+1][COLS-1][1]
-                c = COLS-1
-            trajectory[-1] = (newX, newY)
+            # check wether left-side or right side
+            if trajectory[-1][0] < bubble_grid[row][col][0]:
+                newX = bubble_grid[row+1][col-(1-d)][0]
+                newY = bubble_grid[row+1][col-(1-d)][1]
+                r = row+1
+                c = col-(1-d)
+                if col-(1-d) < 0:  # special case
+                    newX = bubble_grid[row+1][0][0]
+                    newY = bubble_grid[row+1][0][1]
+                    c = 0
+                trajectory[-1] = (newX, newY)
+
+            else:
+                newX = bubble_grid[row+1][col+d][0]
+                newY = bubble_grid[row+1][col+d][1]
+                r = row+1
+                c = col+d
+                if col+d >= COLS:
+                    newX = bubble_grid[row+1][COLS-1][0]
+                    newY = bubble_grid[row+1][COLS-1][1]
+                    c = COLS-1
+                trajectory[-1] = (newX, newY)
 
         # Step 2: check if point of impact is above middle right point of ball, so bubble will be placed on same row, next position, or analogue, left
     if trajectory[-1][1] <= bubble_grid[row][col][1]:
@@ -82,7 +89,7 @@ def bubbleTrajectory(start_pos, angle):
             trajectory[-1] = (newX, newY)
             r = row
             c = col+1
-    return trajectory, r, c
+    return trajectory, r, c, LOST_GAME
 
 
 # a function to check for collisions between bubbles and lateral walls
@@ -100,7 +107,7 @@ def wallCollision(pos, angle):
 def finalCollision(pos, angle):
     # check all bubble, starting from lower rows upwards
     for r in reversed(range(0, MAXROWS)):
-        for c in range(0, MAXCOLS):
+        for c in range(0, COLS):
             # check if there is a ball in that particular position
             if bubble_grid[r][c][3]:  # filled=True
                 # check if the two bubbles are at a distance smaller or equal than 2*Radius (means they are adjacent)
@@ -111,14 +118,24 @@ def finalCollision(pos, angle):
                     return True, r, c
     # the bubble reached the upper bound of the screen without meeting other bubbles
     if pos[1] < RADIUS+UPPER_MENU_HEIGHT+UPAD:
-        return True
+        dmin = 9999
+        col = 0
+        for c in range(COLS):
+            if dist([pos[0], pos[1]], [bubble_grid[0][c][0], bubble_grid[0][c][1]]) < dmin:
+                dmin = dist([pos[0], pos[1]], [bubble_grid[0][c]
+                            [0], bubble_grid[0][c][1]])
+                col = c
+        return True, 0, col
     return False, None, None
 
 
 # function to add the Shot bubble to the matrix
 def add_bubble(pos, color, r, c):
+    global LOST_GAME
     bubble_grid[r][c] = [pos[0], pos[1], color, True]
-    # A function to pop the bubbles and update the matrix
+    if r == MAXROWS:
+        LOST_GAME = True
+    return LOST_GAME
 
 
 def get_neighbours(row, col):
@@ -194,3 +211,32 @@ def free_bubble_popper():
     if popped > 0:
         SCORE += int(2+1.2**popped)
     return bubble_grid, SCORE
+
+# check if game is won
+
+
+def check_won_game():
+    count = 0
+    for r in range(MAXROWS):
+        for c in range(COLS):
+            if bubble_grid[r][c][3]:
+                count += 1
+    if count == 0:
+        return True
+    return False
+
+# reset variables once game over
+
+
+def reset():
+    global SCORE
+    global bubble_grid
+    global LOST_GAME
+    global WON_GAME
+    global trajectory
+
+    SCORE = 0
+    bubble_grid.clear()
+    LOST_GAME = False
+    WON_GAME = False
+    trajectory.clear()

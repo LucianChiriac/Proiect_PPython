@@ -14,7 +14,7 @@ PURPLE = (153, 0, 153)
 GRAY = (128, 128, 128)
 BCKG_UP = (153, 214, 255)
 BCKG_DOWN = (255, 179, 179)
-COLORS = [RED, GREEN, BLUE, ORANGE, PURPLE]  # colors used for bubbles
+COLORS = [RED, GREEN, BLUE]  # colors used for bubbles
 CURRENT_COLOR = None
 NEXT_COLOR = None
 
@@ -33,6 +33,8 @@ pg.display.set_caption("Bubbles!")  # Caption to appear on window
 # position of the bubble to be launched (bottom screen)
 SHOOTER = (SCREEN_SIZE[0]/2, SCREEN_SIZE[1]-LOWER_MENU_HEIGHT/2)
 SCORE = 0
+LOST_GAME = False
+WON_GAME = False
 # padding between screen margins and actual objects
 LPAD = 0
 RPAD = 0

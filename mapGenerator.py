@@ -11,6 +11,30 @@ from globalSettings import *
 import random
 
 
+def paint_lost_game(LOST_GAME):
+    if LOST_GAME:
+        rect = pg.draw.rect(
+            WINDOW, RED, (0, SCREEN_SIZE[1]/2-10, SCREEN_SIZE[0], UPPER_MENU_HEIGHT))
+    # create the text to show score
+        lost_text = Score_font.render(
+            "YOU LOST!", True, PURPLE)
+    # stick the text onto screen (middle positioning)
+        WINDOW.blit(lost_text, ((
+            rect.size[0]-lost_text.get_width())/2, SCREEN_SIZE[1]/2-10))
+
+
+def paint_won_game(WON_GAME):
+    if WON_GAME:
+        rect = pg.draw.rect(
+            WINDOW, YELLOW, (0, SCREEN_SIZE[1]/2-10, SCREEN_SIZE[0], UPPER_MENU_HEIGHT))
+    # create the text to show score
+        won_text = Score_font.render(
+            "YOU WON!", True, PURPLE)
+    # stick the text onto screen (middle positioning)
+        WINDOW.blit(won_text, ((
+            rect.size[0]-won_text.get_width())/2, SCREEN_SIZE[1]/2-10))
+
+
 def paint_upper_menu(SCORE):
     # draw the upper menu rectangle
     rect = pg.draw.rect(
@@ -79,9 +103,11 @@ def get_shooter_rect():  # the bubble to be shot
     return rect
 
 
-def paint_game_window(current_color, next_color, SCORE):
+def paint_game_window(current_color, next_color, SCORE, LOST_GAME, WON_GAME):
     WINDOW.fill(WHITE)
     paint_upper_menu(SCORE)
     paint_bubbleWall()
     paint_lower_menu(current_color, next_color)
+    paint_lost_game(LOST_GAME)
+    paint_won_game(WON_GAME)
     pg.display.update()
