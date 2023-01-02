@@ -11,7 +11,7 @@ from globalSettings import *
 import random
 
 
-def paint_upper_menu():
+def paint_upper_menu(SCORE):
     # draw the upper menu rectangle
     rect = pg.draw.rect(
         WINDOW, BCKG_UP, (0, 0, SCREEN_SIZE[0], UPPER_MENU_HEIGHT))
@@ -79,9 +79,9 @@ def get_shooter_rect():  # the bubble to be shot
     return rect
 
 
-def paint_game_window(current_color, next_color):
+def paint_game_window(current_color, next_color, SCORE):
     WINDOW.fill(WHITE)
-    paint_upper_menu()
+    paint_upper_menu(SCORE)
     paint_bubbleWall()
     paint_lower_menu(current_color, next_color)
     pg.display.update()

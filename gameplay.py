@@ -62,11 +62,7 @@ def bubbleTrajectory(start_pos, angle):
             newY = bubble_grid[row+1][col+d][1]
             r = row+1
             c = col+d
-            print("Got here")
-            print(MAXCOLS)
-            print(col, d, col+d)
             if col+d >= COLS:
-                print("And here")
                 newX = bubble_grid[row+1][COLS-1][0]
                 newY = bubble_grid[row+1][COLS-1][1]
                 c = COLS-1
@@ -146,6 +142,7 @@ def get_neighbours(row, col):
 
 
 def color_bubble_popper(row, col):
+    global SCORE
     bubbles = []  # the list of bubbles that will be popped
     start = 0  # index
     bubbles.append((row, col))  # starts with the bubble just added
@@ -159,12 +156,41 @@ def color_bubble_popper(row, col):
                 if (n[0], n[1]) not in bubbles:
                     bubbles.append((n[0], n[1]))
         start += 1
-    print(bubbles)
     if len(bubbles) >= 3:  # condition to pop
         for b in bubbles:
             bubble_grid[b[0]][b[1]][3] = False
-    return bubble_grid
+    # compute a score
+    popped = len(bubbles)
+    if popped < 3:
+        SCORE += 0
+    else:
+        SCORE += int(5+1.7**popped)
+    return bubble_grid, SCORE
 
 
 def free_bubble_popper():
-    return
+    global SCORE
+    # goes over the entire bubble grid, sets bubbles that have no upper/lateral neighbours to False
+    lista = []
+    start = 0
+    for c in range(COLS):
+        if bubble_grid[0][c][3]:
+            lista.append((0, c))
+    while start < len(lista):
+        neighbours = get_neighbours(lista[start][0], lista[start][1])
+        for n in neighbours:
+            if bubble_grid[n[0]][n[1]][3] and ((n[0], n[1]) not in lista):
+                lista.append((n[0], n[1]))
+        start += 1
+
+    # now go through entire bubble grid; bubbles that are not in "lista" are freestanding and need to be popped
+    popped = 0
+    for i in range(MAXROWS):
+        for j in range(COLS):
+            if (i, j) not in lista and (bubble_grid[i][j][3]):
+                bubble_grid[i][j][3] = False
+                popped += 1
+    # compute a score)
+    if popped > 0:
+        SCORE += int(2+1.2**popped)
+    return bubble_grid, SCORE
