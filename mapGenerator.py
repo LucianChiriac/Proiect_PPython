@@ -54,10 +54,10 @@ def paint_lower_menu(current_color, next_color):
     paint_bubble(WINDOW, SHOOTER[0], SHOOTER[1], current_color)
     # Insert text message with color of next ball
     text = Font.render("Next bubble: ", True, PURPLE)
-    WINDOW.blit(text, (SHOOTER[0]+100, SCREEN_SIZE[1] -
+    WINDOW.blit(text, (SHOOTER[0]+80, SCREEN_SIZE[1] -
                 (LOWER_MENU_HEIGHT+Font.get_height())/2))
     # Draw the "next" ball, after the text
-    paint_bubble(WINDOW, SHOOTER[0]+125+text.get_width(), SCREEN_SIZE[1] -
+    paint_bubble(WINDOW, SHOOTER[0]+100+text.get_width(), SCREEN_SIZE[1] -
                  (LOWER_MENU_HEIGHT)/2, next_color)
 
 # function to compute the center for all possibile bubbles on the game map

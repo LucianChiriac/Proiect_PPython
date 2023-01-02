@@ -89,6 +89,20 @@ def bubbleTrajectory(start_pos, angle):
             trajectory[-1] = (newX, newY)
             r = row
             c = col+1
+    # special case - last row
+    # if row == 0:
+    #     if trajectory[-1][0] < bubble_grid[0][col][0]:
+    #         newX = bubble_grid[row][col-1][0]
+    #         newY = bubble_grid[row][col-1][1]
+    #         trajectory[-1] = (newX, newY)
+    #         r = row
+    #         c = col-1
+    #     else:
+    #         newX = bubble_grid[row][col+1][0]
+    #         newY = bubble_grid[row][col+1][1]
+    #         trajectory[-1] = (newX, newY)
+    #         r = row
+    #         c = col+1
     return trajectory, r, c, LOST_GAME
 
 
@@ -118,13 +132,17 @@ def finalCollision(pos, angle):
                     return True, r, c
     # the bubble reached the upper bound of the screen without meeting other bubbles
     if pos[1] < RADIUS+UPPER_MENU_HEIGHT+UPAD:
-        dmin = 9999
+        dmin = 99999
         col = 0
+        print(pos[0], pos[1])
         for c in range(COLS):
-            if dist([pos[0], pos[1]], [bubble_grid[0][c][0], bubble_grid[0][c][1]]) < dmin:
-                dmin = dist([pos[0], pos[1]], [bubble_grid[0][c]
-                            [0], bubble_grid[0][c][1]])
-                col = c
+            d = dist([pos[0], pos[1]], [bubble_grid[0]
+                     [c][0], bubble_grid[0][c][1]])
+            if d < dmin:
+                if not bubble_grid[0][c][3]:
+                    print(bubble_grid[0][c][0], bubble_grid[0][c][1], d, c)
+                    dmin = d
+                    col = c
         return True, 0, col
     return False, None, None
 
