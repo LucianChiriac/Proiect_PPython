@@ -51,7 +51,7 @@ def get_bubble_specs():  # matrix of tuples of shape (x,y,color, filled) where x
                 filled = True
             else:
                 filled = False
-            coords.append((x, y, color, filled))
+            coords.append([x, y, color, filled])
         bubble_grid.append(coords)
     return bubble_grid
 

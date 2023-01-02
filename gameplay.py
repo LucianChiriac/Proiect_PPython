@@ -49,17 +49,29 @@ def bubbleTrajectory(start_pos, angle):
         if trajectory[-1][0] < bubble_grid[row][col][0]:
             newX = bubble_grid[row+1][col-(1-d)][0]
             newY = bubble_grid[row+1][col-(1-d)][1]
-            trajectory[-1] = (newX, newY)
             r = row+1
             c = col-(1-d)
-            print("Lower Left", d, r, c)
+            if col-(1-d) < 0:  # special case
+                newX = bubble_grid[row+1][0][0]
+                newY = bubble_grid[row+1][0][1]
+                c = 0
+            trajectory[-1] = (newX, newY)
+
         else:
             newX = bubble_grid[row+1][col+d][0]
             newY = bubble_grid[row+1][col+d][1]
-            trajectory[-1] = (newX, newY)
             r = row+1
             c = col+d
-            print("Lower Right", d, r, c)
+            print("Got here")
+            print(MAXCOLS)
+            print(col, d, col+d)
+            if col+d >= COLS:
+                print("And here")
+                newX = bubble_grid[row+1][COLS-1][0]
+                newY = bubble_grid[row+1][COLS-1][1]
+                c = COLS-1
+            trajectory[-1] = (newX, newY)
+
         # Step 2: check if point of impact is above middle right point of ball, so bubble will be placed on same row, next position, or analogue, left
     if trajectory[-1][1] <= bubble_grid[row][col][1]:
         if trajectory[-1][0] < bubble_grid[row][col][0]:
@@ -68,14 +80,12 @@ def bubbleTrajectory(start_pos, angle):
             trajectory[-1] = (newX, newY)
             r = row
             c = col-1
-            print("Left", d, r, c)
         else:
             newX = bubble_grid[row][col+1][0]
             newY = bubble_grid[row][col+1][1]
             trajectory[-1] = (newX, newY)
             r = row
             c = col+1
-            print("Right", d, r, c)
     return trajectory, r, c
 
 
@@ -111,9 +121,50 @@ def finalCollision(pos, angle):
 
 # function to add the Shot bubble to the matrix
 def add_bubble(pos, color, r, c):
-    bubble_grid[r][c] = (pos[0], pos[1], color, True)
+    bubble_grid[r][c] = [pos[0], pos[1], color, True]
     # A function to pop the bubbles and update the matrix
 
 
-def bubble_pop(start_pos):
-    x = 2
+def get_neighbours(row, col):
+    neighbours = []
+    d = row % 2
+    if row-1 >= 0:
+        if col-(1-d) >= 0:
+            neighbours.append((row-1, col-(1-d)))
+        if col+d < MAXCOLS:
+            neighbours.append((row-1, col+d))
+    if col-1 >= 0:
+        neighbours.append((row, col-1))
+    if col+1 < MAXCOLS:
+        neighbours.append((row, col+1))
+    if row+1 < MAXROWS:
+        if col+d < MAXCOLS:
+            neighbours.append((row+1, col+d))
+        if col-(1-d) >= 0:
+            neighbours.append((row+1, col-(1-d)))
+    return neighbours
+
+
+def color_bubble_popper(row, col):
+    bubbles = []  # the list of bubbles that will be popped
+    start = 0  # index
+    bubbles.append((row, col))  # starts with the bubble just added
+    while start < len(bubbles):
+        x = bubbles[start][0]
+        y = bubbles[start][1]
+        neighbours = get_neighbours(x, y)
+        for n in neighbours:  # check if there is a ball there, and if it's the same color
+            if bubble_grid[n[0]][n[1]][3] and bubble_grid[n[0]][n[1]][2] == bubble_grid[x][y][2]:
+                # check n is not already in bubbles
+                if (n[0], n[1]) not in bubbles:
+                    bubbles.append((n[0], n[1]))
+        start += 1
+    print(bubbles)
+    if len(bubbles) >= 3:  # condition to pop
+        for b in bubbles:
+            bubble_grid[b[0]][b[1]][3] = False
+    return bubble_grid
+
+
+def free_bubble_popper():
+    return

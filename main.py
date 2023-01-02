@@ -36,6 +36,8 @@ def main():
                     pygame.display.update()
                     fps.tick(60)
                 add_bubble(trajectory[-1], SHOOTER_COLOR, r, c)
+                bubble_grid = color_bubble_popper(r, c)
+                paint_game_window(LOADED_COLOR, NEXT_COLOR)
                 pygame.display.update()
                 fps.tick(60)
                 SHOOTER_COLOR = LOADED_COLOR
