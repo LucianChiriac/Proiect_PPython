@@ -1,6 +1,7 @@
 import sys
 import pygame
 from globalSettings import *
+import globalSettings
 from mapGenerator import *
 from pygame.locals import *
 from gameplay import *
@@ -14,13 +15,23 @@ def main():
     global SCORE
     global LOST_GAME
     global WON_GAME
+    global COLORS, COLORS_1, COLORS_2
+    global LEVEL
+    global MAXROWS
+    if LEVEL == 1:
+        COLORS = COLORS_1
+        rows = MAXROWS - 5
+    else:
+        COLORS = COLORS_2
+        rows = MAXROWS - 3
     SHOOTER_COLOR = random.sample(COLORS, 1)[0]
     LOADED_COLOR = SHOOTER_COLOR
     NEXT_COLOR = random.sample(COLORS, 1)[0]
     displaysurface = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption("Game")
-    bubble_grid = get_bubble_specs()
-    paint_game_window(LOADED_COLOR, NEXT_COLOR, SCORE, LOST_GAME, WON_GAME)
+    bubble_grid = get_bubble_specs(COLORS, rows)
+    paint_game_window(LOADED_COLOR, NEXT_COLOR, SCORE,
+                      LOST_GAME, WON_GAME, LEVEL)
     pygame.display.update()
     while True:
         for event in pygame.event.get():
@@ -35,7 +46,7 @@ def main():
                 trajectory, r, c, LOST_GAME = bubbleTrajectory(SHOOTER, angle)
                 for coords in trajectory:
                     paint_game_window(
-                        LOADED_COLOR, NEXT_COLOR, SCORE, LOST_GAME, WON_GAME)
+                        LOADED_COLOR, NEXT_COLOR, SCORE, LOST_GAME, WON_GAME, LEVEL)
                     paint_bubble(WINDOW, coords[0], coords[1], SHOOTER_COLOR)
                     pygame.display.update()
                     fps.tick(60)
@@ -44,11 +55,17 @@ def main():
                     bubble_grid, SCORE = color_bubble_popper(r, c)
                     bubble_grid, SCORE = free_bubble_popper()
                 paint_game_window(LOADED_COLOR, NEXT_COLOR,
-                                  SCORE, LOST_GAME, WON_GAME)
+                                  SCORE, LOST_GAME, WON_GAME, LEVEL)
                 WON_GAME = check_won_game()
-                if LOST_GAME or WON_GAME:
+                if WON_GAME and LEVEL == 1:
                     reset()
                     pygame.event.clear()
+                    LEVEL = 2
+                    main()
+                elif LOST_GAME or WON_GAME:
+                    reset()
+                    pygame.event.clear()
+                    LEVEL = 1
                     main()
                 pygame.display.update()
                 fps.tick(60)

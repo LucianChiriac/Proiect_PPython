@@ -91,18 +91,11 @@ def bubbleTrajectory(start_pos, angle):
             c = col+1
     # special case - last row
     # if row == 0:
-    #     if trajectory[-1][0] < bubble_grid[0][col][0]:
-    #         newX = bubble_grid[row][col-1][0]
-    #         newY = bubble_grid[row][col-1][1]
-    #         trajectory[-1] = (newX, newY)
-    #         r = row
-    #         c = col-1
-    #     else:
-    #         newX = bubble_grid[row][col+1][0]
-    #         newY = bubble_grid[row][col+1][1]
-    #         trajectory[-1] = (newX, newY)
-    #         r = row
-    #         c = col+1
+    #     newX = bubble_grid[row][col][0]
+    #     newY = bubble_grid[row][col][1]
+    #     trajectory[-1] = (newX, newY)
+    #     r = row
+    #     c = col
     return trajectory, r, c, LOST_GAME
 
 

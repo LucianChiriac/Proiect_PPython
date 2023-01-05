@@ -46,7 +46,7 @@ def paint_upper_menu(SCORE):
     WINDOW.blit(score_text, ((rect.size[0]-score_text.get_width())/2, 0))
 
 
-def paint_lower_menu(current_color, next_color):
+def paint_lower_menu(current_color, next_color, LEVEL):
     # draw the lower menu rectangle
     rect = pg.draw.rect(
         WINDOW, BCKG_DOWN, (0, SCREEN_SIZE[1]-LOWER_MENU_HEIGHT, SCREEN_SIZE[0], LOWER_MENU_HEIGHT))
@@ -54,7 +54,10 @@ def paint_lower_menu(current_color, next_color):
     paint_bubble(WINDOW, SHOOTER[0], SHOOTER[1], current_color)
     # Insert text message with color of next ball
     text = Font.render("Next bubble: ", True, PURPLE)
+    lvl_text = Font.render(f'Level: {LEVEL}', True, BLUE)
     WINDOW.blit(text, (SHOOTER[0]+80, SCREEN_SIZE[1] -
+                (LOWER_MENU_HEIGHT+Font.get_height())/2))
+    WINDOW.blit(lvl_text, (10, SCREEN_SIZE[1] -
                 (LOWER_MENU_HEIGHT+Font.get_height())/2))
     # Draw the "next" ball, after the text
     paint_bubble(WINDOW, SHOOTER[0]+100+text.get_width(), SCREEN_SIZE[1] -
@@ -63,7 +66,8 @@ def paint_lower_menu(current_color, next_color):
 # function to compute the center for all possibile bubbles on the game map
 
 
-def get_bubble_specs():  # matrix of tuples of shape (x,y,color, filled) where x,y are the center coordinates, filled=True/False indicating wether there is a bubble there or not
+# matrix of tuples of shape (x,y,color, filled) where x,y are the center coordinates, filled=True/False indicating wether there is a bubble there or not
+def get_bubble_specs(COLORS, rows):
     for r in range(MAXROWS):
         coords = []  # one row of bubble "centers"
         for c in range(MAXCOLS):
@@ -71,7 +75,7 @@ def get_bubble_specs():  # matrix of tuples of shape (x,y,color, filled) where x
             y = UPPER_MENU_HEIGHT + (r*2+1)*RADIUS - \
                 r*7 + UPAD  # (added padding)
             color = random.sample(COLORS, 1)[0]  # set color at random
-            if r < ROWS and c < COLS:
+            if r < rows and c < COLS:
                 filled = True
             else:
                 filled = False
@@ -103,11 +107,11 @@ def get_shooter_rect():  # the bubble to be shot
     return rect
 
 
-def paint_game_window(current_color, next_color, SCORE, LOST_GAME, WON_GAME):
+def paint_game_window(current_color, next_color, SCORE, LOST_GAME, WON_GAME, LEVEL):
     WINDOW.fill(WHITE)
     paint_upper_menu(SCORE)
     paint_bubbleWall()
-    paint_lower_menu(current_color, next_color)
+    paint_lower_menu(current_color, next_color, LEVEL)
     paint_lost_game(LOST_GAME)
     paint_won_game(WON_GAME)
     pg.display.update()

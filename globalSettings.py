@@ -14,9 +14,13 @@ PURPLE = (153, 0, 153)
 GRAY = (128, 128, 128)
 BCKG_UP = (153, 214, 255)
 BCKG_DOWN = (255, 179, 179)
-COLORS = [RED, GREEN, BLUE]  # colors used for bubbles
+COLORS = []
+LEVEL = 1
+COLORS_1 = [RED, GREEN, BLUE]  # colors used for bubbles in lvl 1
+COLORS_2 = [RED, GREEN, BLUE, YELLOW]  # colors used in level 2
 CURRENT_COLOR = None
 NEXT_COLOR = None
+
 
 # Fonts
 Score_font = pg.font.SysFont("Times New Roman", 40)
@@ -48,9 +52,11 @@ RADIUS = 25
 # Bubble matrix size
 MAXROWS = (SCREEN_SIZE[1]-UPAD-DPAD-LOWER_MENU_HEIGHT -
            UPPER_MENU_HEIGHT)//(2*RADIUS)
-ROWS = MAXROWS - 5
+
 MAXCOLS = (SCREEN_SIZE[0]-LPAD-RPAD)//(2*RADIUS)
 COLS = MAXCOLS - 1
+ROWS = MAXROWS - 5
+
 
 # Share the difference between the 2 paddings
 DIFF = SCREEN_SIZE[0] - (COLS)*2*RADIUS
