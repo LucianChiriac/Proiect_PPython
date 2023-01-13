@@ -6,10 +6,23 @@ from mapGenerator import *
 from pygame.locals import *
 from gameplay import *
 import random
+import json
+import datetime
+import os
 pygame.init()
 
 
 def main():
+
+    # check json file exists
+    if not os.path.isfile('history.json'):
+        with open('history.json', 'w') as jsonFile:
+            jsonFile.write(json.dumps({}))
+    with open('history.json', 'r') as jsonFile:
+        jsonData = json.load(jsonFile)
+        jsonData = json.dumps(jsonData)
+        jsonData = json.loads(jsonData)
+
     fps = pygame.time.Clock()
     global trajectory
     global SCORE
@@ -36,6 +49,11 @@ def main():
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
+                timestamp = datetime.datetime.now()
+                timestamp = str(timestamp)
+                jsonData[timestamp] = "quit"
+                with open('history.json', 'w') as jsonFile:
+                    json.dump(jsonData, jsonFile)
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONUP:
@@ -58,11 +76,28 @@ def main():
                                   SCORE, LOST_GAME, WON_GAME, LEVEL)
                 WON_GAME = check_won_game()
                 if WON_GAME and LEVEL == 1:
+                    timestamp = datetime.datetime.now()
+                    timestamp = str(timestamp)
+                    jsonData[timestamp] = "passed level 1"
+                    with open('history.json', 'w') as jsonFile:
+                        json.dump(jsonData, jsonFile)
                     reset()
                     pygame.event.clear()
                     LEVEL = 2
                     main()
                 elif LOST_GAME or WON_GAME:
+                    if LOST_GAME:
+                        timestamp = datetime.datetime.now()
+                        timestamp = str(timestamp)
+                        jsonData[timestamp] = "LOST GAME"
+                        with open('history.json', 'w') as jsonFile:
+                            json.dump(jsonData, jsonFile)
+                    if WON_GAME:
+                        timestamp = datetime.datetime.now()
+                        timestamp = str(timestamp)
+                        jsonData[timestamp] = "WON GAME!"
+                        with open('history.json', 'w') as jsonFile:
+                            json.dump(jsonData, jsonFile)
                     reset()
                     pygame.event.clear()
                     LEVEL = 1
@@ -74,3 +109,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# la final de joc, fisier JSON updatat la fiecare cu Dictionar (timestamp : status (lost/won/exit)
+# json.load()
+# json.dump()
