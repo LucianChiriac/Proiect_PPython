@@ -1,5 +1,5 @@
 # Proiect_PPython
-
+The classic bubble-buster game, implemented in python using pygame library. 
 # Window structure
 
 1. Menu
